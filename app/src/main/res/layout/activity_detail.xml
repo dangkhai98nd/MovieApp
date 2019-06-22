@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:id="@+id/main_content"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:background="@color/white"
+                                                 android:fitsSystemWindows="true">
+
+
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <RelativeLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+
+                    <ImageView
+                            android:id="@+id/backdrop"
+                            android:layout_height="220dp"
+                            android:layout_width="match_parent"
+                            android:fitsSystemWindows="true"
+                            android:scaleType="centerCrop"
+                            android:adjustViewBounds="true"
+                            app:layout_collapseMode="parallax"
+                            android:foreground="@drawable/poster" android:visibility="invisible"/>
+
+                    <!--<Button-->
+                            <!--android:layout_height="52dp"-->
+                            <!--android:layout_width="52dp"-->
+                            <!--android:id="@+id/btn_play"-->
+                            <!--android:layout_centerInParent="true"-->
+                            <!--android:foreground="@drawable/playvideo2"-->
+                            <!--android:background="@drawable/background_null"/>-->
+                    <fragment
+                            android:id="@+id/videoyoutube"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:name="com.google.android.youtube.player.YouTubePlayerFragment">
+                    </fragment>
+                    <!--<ImageView-->
+                            <!--android:id="@+id/iconplay"-->
+                            <!--android:layout_height="52dp"-->
+                            <!--android:layout_width="52dp"-->
+                            <!--android:fitsSystemWindows="true"-->
+                            <!--android:layout_centerInParent="true"-->
+                            <!--android:scaleType="centerCrop"-->
+                            <!--android:adjustViewBounds="true"-->
+                            <!--app:layout_collapseMode="parallax"-->
+                            <!--android:foreground="@drawable/playvideo2"/>-->
+                    <!--<android.support.v7.widget.RecyclerView android:orientation="horizontal"-->
+                                                            <!--android:id="@+id/recycle_view_video"-->
+                                                            <!--android:layout_width ="match_parent"-->
+                                                            <!--android:layout_height = "wrap_content"-->
+                                                            <!--android:clipToPadding="false">-->
+
+                    <!--</android.support.v7.widget.RecyclerView>-->
+
+                </RelativeLayout>
+
+
+
+
+
+                <LinearLayout android:layout_width="wrap_content"
+                              android:orientation="horizontal"
+                              android:layout_height="wrap_content">
+                    <ImageView
+                            android:id="@+id/thumbnail_image_header"
+                            android:layout_height="180dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginBottom="20dp"
+                            android:background="@drawable/roundimageview"
+                            android:layout_width="120dp"
+                            android:fitsSystemWindows="true"
+                            android:scaleType="centerCrop"
+                            android:adjustViewBounds="true"
+                            app:layout_collapseMode="parallax"/>
+
+                    <LinearLayout android:layout_width="wrap_content"
+                                  android:orientation="vertical"
+                                  android:layout_height="wrap_content">
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/name"
+                                android:padding="@dimen/padding_layout"
+                                android:layout_marginTop="@dimen/layout_margin_top"
+                                android:textSize="25sp"
+                                app:layout_constraintLeft_toLeftOf="@+id/thumbnail_image_header"
+                                app:layout_constraintTop_toTopOf="@+id/thumbnail_image_header"
+                                tools:layout_constraintTop_creator="1"
+                                tools:layout_constraintLeft_creator="1"
+                                android:textStyle="bold|italic"/>
+
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/userrating"
+                                android:padding="@dimen/padding_layout"
+                                android:textSize="20sp"
+                                app:layout_constraintTop_toBottomOf="@+id/title"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                tools:layout_constraintTop_creator="1" />
+
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/time"
+                                android:padding="@dimen/padding_layout"
+                                android:textSize="20sp"
+                                app:layout_constraintTop_toBottomOf="@+id/userrating"
+                                app:layout_constraintLeft_toLeftOf="parent" />
+                        <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/releasedate"
+                                android:padding="@dimen/padding_layout"
+                                android:textSize="20sp"
+                                app:layout_constraintTop_toBottomOf="@+id/time"
+                                app:layout_constraintLeft_toLeftOf="parent" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/plotsynopsis"
+                        android:layout_marginLeft="@dimen/layout_margin_left"
+                        android:padding="@dimen/padding_layout"
+                        android:textSize="20sp"
+
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                <android.support.v7.widget.RecyclerView android:orientation="horizontal"
+                                                        android:id="@+id/recycle_view_backdrop"
+                                                        android:layout_width ="match_parent"
+                                                        android:layout_height = "wrap_content"
+                                                        android:clipToPadding="false">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+
+    <!--<ImageView-->
+            <!--android:id="@+id/backdrop_bottom"-->
+            <!--android:layout_height="220dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:fitsSystemWindows="true"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--app:layout_collapseMode="parallax"/>-->
+
+
+
+</android.support.v4.widget.NestedScrollView>
