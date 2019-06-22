@@ -39,6 +39,8 @@ class BackdropAdapter (
 
         Glide.with(this!!.mContext!!)
             .load(mImages?.get(p1)?.get_image_path())
+            .thumbnail(Glide.with(this!!.mContext!!).load(R.drawable.icon_load_backdrop))
+            .fitCenter()
             .into(p0.backdropbottom!!)
 
 

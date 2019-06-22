@@ -158,6 +158,8 @@ class DetailActivity : AppCompatActivity() {
 //                            .into(backdrop)
                         Glide.with(this@DetailActivity)
                             .load(movie?.get_poster_path())
+                            .thumbnail(Glide.with(this@DetailActivity).load(R.drawable.icon_load))
+                            .fitCenter()
                             .into(thumbnail_image_header)
 
                         thumbnail_image_header.clipToOutline = true
