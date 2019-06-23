@@ -63,4 +63,6 @@ class BackdropAdapter (
         this.mImages = images as MutableList<ApiImages.Image>?
         notifyDataSetChanged()
     }
+
+
 }

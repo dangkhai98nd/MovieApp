@@ -7,9 +7,8 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.example.glidetest.Models.ApiImages
 import com.example.glidetest.Models.ApiVideos
@@ -18,14 +17,18 @@ import com.example.glidetest.adapter.BackdropAdapter
 import com.example.glidetest.adapter.VideoAdapter
 import com.example.glidetest.api.Client
 import com.example.glidetest.api.Service
+import com.example.glidetest.utils.RecyclerViewOnClickListener
 import com.example.retrofittest.Models.Movie
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.activity_detail.*
+import kotlinx.android.synthetic.main.videolayout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+
 
 
 
@@ -34,13 +37,17 @@ class DetailActivity : AppCompatActivity() {
 
     var recycleView : RecyclerView? = null
     var adapter : BackdropAdapter? = null
-//    var adapter_videos : VideoAdapter? = null
-//    var recyclerViewVideos : RecyclerView? = null
+    var adapter_videos : VideoAdapter? = null
+    var recyclerViewVideos : RecyclerView? = null
     var imagesBackdrop : List<ApiImages.Image>? = null
     var movieID : Int = 320288
     var movie : Movie? = null
     var videos : List<Video>? = null
     var pd : ProgressDialog? = null
+    var youTubeFragment : YouTubePlayerFragment? = null
+    var youTubePlayerVideos: YouTubePlayer? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,10 +103,34 @@ class DetailActivity : AppCompatActivity() {
         loadJSONDetail()
         loadJSONTrailer()
         loadJSONImage()
-
         adapter?.notifyDataSetChanged()
-//        adapter_videos?.notifyDataSetChanged()
+        adapter_videos?.notifyDataSetChanged()
 
+    }
+
+    private fun populateRecyclerViewVideos() {
+        adapter_videos = VideoAdapter(this,videos)
+        recyclerViewVideos?.adapter = adapter_videos
+        recyclerViewVideos?.addOnItemTouchListener(RecyclerViewOnClickListener(this,object : RecyclerViewOnClickListener.OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                if (youTubeFragment != null && youTubePlayerVideos != null) {
+                    //update selected position
+                    adapter_videos?.setSelectedPosition(position)
+
+                    //load selected video
+                    youTubePlayerVideos?.loadVideo(videos?.get(position)?.key)
+                }
+            }
+        }))
+    }
+
+    private fun setUpRecyclerViewVideos() {
+        recyclerViewVideos = recycle_view_video
+        recyclerViewVideos?.setHasFixedSize(true)
+
+        //Horizontal direction recycler view
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewVideos?.layoutManager = linearLayoutManager
     }
 
     private fun loadJSONImage() {
@@ -204,19 +235,28 @@ class DetailActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<ApiVideos>, response: Response<ApiVideos>) {
                         videos = response.body()?.results
 
-                        if (videos?.size != 0) {
-                            val youtubeFragment =
-                                fragmentManager.findFragmentById(R.id.videoyoutube) as YouTubePlayerFragment
-                            youtubeFragment.initialize("${BuildConfig.API_KEY}",
+                        if (videos?.size != 0 ) {
+                            youTubeFragment = fragmentManager.findFragmentById(R.id.videoyoutube) as YouTubePlayerFragment
+                            youTubeFragment?.initialize(BuildConfig.API_KEY,
                                 object : YouTubePlayer.OnInitializedListener {
                                     override fun onInitializationSuccess(
                                         provider: YouTubePlayer.Provider,
                                         youTubePlayer: YouTubePlayer, b: Boolean
                                     ) {
-                                        if (movie?.vote_average!! < 5) {
-                                            youTubePlayer.cueVideo("${videos?.get(0)?.key}")
-                                        } else {
-                                            youTubePlayer.loadVideo("${videos?.get(0)?.key}")
+
+                                        if (!b) {
+                                            youTubePlayerVideos = youTubePlayer
+                                            val vote_average: Float = movie?.vote_average!!
+                                            youTubePlayerVideos?.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
+                                            if (vote_average < 5) {
+                                                youTubePlayerVideos?.cueVideo(videos?.get(0)?.key)
+                                            } else {
+                                                youTubePlayerVideos?.loadVideo(videos?.get(0)?.key)
+
+                                            }
+
+                                            setUpRecyclerViewVideos()
+                                            populateRecyclerViewVideos()
                                         }
                                     }
 
@@ -224,7 +264,7 @@ class DetailActivity : AppCompatActivity() {
                                         provider: YouTubePlayer.Provider,
                                         youTubeInitializationResult: YouTubeInitializationResult
                                     ) {
-
+//
                                     }
                                 })
 
@@ -234,10 +274,12 @@ class DetailActivity : AppCompatActivity() {
 
                         }
                         else {
-                            backdrop.visibility = ImageView.VISIBLE
-                            Glide.with(this@DetailActivity)
-                                .load(movie?.get_backdrop_path())
-                                .into(backdrop)
+//                            backdrop.visibility = ImageView.VISIBLE
+//                            Glide.with(this@DetailActivity)
+//                                .load(movie?.get_backdrop_path())
+//                                .into(backdrop)
+                            layout_video.visibility = RelativeLayout.GONE
+                            Toast.makeText(this@DetailActivity,"null video",Toast.LENGTH_SHORT).show()
                         }
 
                     }
