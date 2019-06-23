@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
                 xmlns:tools="http://schemas.android.com/tools"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:background="@color/viewBg"
+                android:background="@color/background_color_4"
                 app:layout_behavior="@string/plot"
                 tools:context=".MainActivity"
                 tools:showIn="@layout/activity_main">

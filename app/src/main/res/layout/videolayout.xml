@@ -8,10 +8,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="10dp"
                                     android:layout_marginStart="10dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginBottom="10dp"
                                     app:cardCornerRadius="4dp"
-                                    app:contentPadding="4dp">
+                                    app:contentPaddingBottom="4dp">
 
     <!-- youtube thumbnail view to show the thumbnail of videos -->
     <com.google.android.youtube.player.YouTubeThumbnailView

@@ -17,5 +17,6 @@
     <dimen name="padding_layout">8dp</dimen>
     <dimen name="movie_title_height">55dp</dimen>
     <dimen name="movie_title_padding_topbottom">5dp</dimen>
+    <dimen name="font_size_text">13sp</dimen>
 
 </resources>

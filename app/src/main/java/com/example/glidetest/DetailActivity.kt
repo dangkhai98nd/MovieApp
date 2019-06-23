@@ -53,34 +53,6 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-//        val intentThatStartedThisActivity : Intent = intent
-
-
-
-
-
-//        if (intentThatStartedThisActivity.hasExtra("bundle_movie")) {
-//
-//
-//
-//            var bundle: Bundle? = null
-//            bundle = intent.getBundleExtra("bundle_movie")
-//            var parcelable : Parcelable? = null
-//            parcelable = bundle?.getParcelable<Parcelable>("movies")
-//            movie = parcelable as Movie
-//
-//            Toast.makeText(this,"${movie?.name}",Toast.LENGTH_SHORT).show()
-//            Glide.with(this)
-//                .load(movie?.get_backdrop_path())
-//                .into(backdrop)
-//            Glide.with(this)
-//                .load(movie?.get_poster_path())
-//                .into(thumbnail_image_header)
-//            name.setText(movie?.name)
-//            userrating.setText(movie?.vote_average.toString())
-//            releasedate.setText(movie?.release_date)
-//            plotsynopsis.setText(movie?.overview)
-//        }
 
         pd = ProgressDialog(this)
         pd!!.setMessage("Load ...")
@@ -88,17 +60,13 @@ class DetailActivity : AppCompatActivity() {
         pd!!.show()
         movieID = intent.extras.getInt("movieID")
         recycleView = recycle_view_backdrop
-//        recyclerViewVideos = recycle_view_video
+
         adapter = BackdropAdapter(this@DetailActivity)
-//        adapter_videos = VideoAdapter(this@DetailActivity)
 
         recycleView?.itemAnimator = DefaultItemAnimator()
         recycleView?.layoutManager = LinearLayoutManager(this@DetailActivity,LinearLayoutManager.HORIZONTAL,false)
         recycleView?.adapter = adapter
 
-//        recyclerViewVideos?.itemAnimator = DefaultItemAnimator()
-//        recyclerViewVideos?.layoutManager = LinearLayoutManager(this@DetailActivity,LinearLayoutManager.HORIZONTAL,false)
-//        recyclerViewVideos?.adapter = adapter_videos
 
         loadJSONDetail()
         loadJSONTrailer()
@@ -114,10 +82,9 @@ class DetailActivity : AppCompatActivity() {
         recyclerViewVideos?.addOnItemTouchListener(RecyclerViewOnClickListener(this,object : RecyclerViewOnClickListener.OnItemClickListener{
             override fun onItemClick(view: View, position: Int) {
                 if (youTubeFragment != null && youTubePlayerVideos != null) {
-                    //update selected position
                     adapter_videos?.setSelectedPosition(position)
 
-                    //load selected video
+
                     youTubePlayerVideos?.loadVideo(videos?.get(position)?.key)
                 }
             }
@@ -128,7 +95,6 @@ class DetailActivity : AppCompatActivity() {
         recyclerViewVideos = recycle_view_video
         recyclerViewVideos?.setHasFixedSize(true)
 
-        //Horizontal direction recycler view
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewVideos?.layoutManager = linearLayoutManager
     }
@@ -153,8 +119,13 @@ class DetailActivity : AppCompatActivity() {
 //                            .load(imagesBackdrop.get(1).get_image_path())
 //                            .into(backdropbottom)
                         adapter?.addAll(imagesBackdrop)
-
-
+                        if (imagesBackdrop?.size != 0 || imagesBackdrop != null) {
+                            backdrop_txt.setText("Backdrop : ")
+                        }
+                        else
+                        {
+                            backdrop_txt.visibility = TextView.GONE
+                        }
                     }
 
                 } )
@@ -206,7 +177,8 @@ class DetailActivity : AppCompatActivity() {
                         }
                         releasedate.setText("Release date : ${movie?.release_date}")
                         plotsynopsis.setText("Overview : ${movie?.overview}")
-                        pd?.dismiss()
+
+
                     }
 
                 } )
@@ -246,7 +218,8 @@ class DetailActivity : AppCompatActivity() {
 
                                         if (!b) {
                                             youTubePlayerVideos = youTubePlayer
-                                            val vote_average: Float = movie?.vote_average!!
+                                            var vote_average: Float = (if (movie?.vote_average!! == null) 0.0F else movie?.vote_average!!)
+
                                             youTubePlayerVideos?.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
                                             if (vote_average < 5) {
                                                 youTubePlayerVideos?.cueVideo(videos?.get(0)?.key)
@@ -281,6 +254,7 @@ class DetailActivity : AppCompatActivity() {
                             layout_video.visibility = RelativeLayout.GONE
                             Toast.makeText(this@DetailActivity,"null video",Toast.LENGTH_SHORT).show()
                         }
+                        pd?.dismiss()
 
                     }
 

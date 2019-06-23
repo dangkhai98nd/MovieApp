@@ -40,21 +40,12 @@ class VideoAdapter (
     override fun onBindViewHolder(p0: VideoAdapter.ItemViewHolder, p1: Int) {
 
 
-//        p0.youTubePlayerView?.initialize(BuildConfig.API_KEY, object : YouTubePlayer.OnInitializedListener{
-//            override fun onInitializationSuccess(p2: YouTubePlayer.Provider?, p3: YouTubePlayer?, p4: Boolean) {
-//                p3?.cueVideo("${mVideos?.get(p1)?.key}")
-//            }
-//
-//            override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {
-//
-//            }
-//        })
         if (selectedPosition == p1)
         {
-            p0.youTubeCardView?.setCardBackgroundColor(ContextCompat.getColor(this!!.mContext!!,R.color.primary_dark_material_dark))
+            p0.youTubeCardView?.setCardBackgroundColor(ContextCompat.getColor(this!!.mContext!!,R.color.red))
         }
         else {
-            p0.youTubeCardView?.setCardBackgroundColor(ContextCompat.getColor(this!!.mContext!!,R.color.white))
+            p0.youTubeCardView?.setCardBackgroundColor(ContextCompat.getColor(this!!.mContext!!,R.color.background_color_1))
         }
 
 
@@ -92,7 +83,6 @@ class VideoAdapter (
     class ItemViewHolder (
         private var view: View
     ): RecyclerView.ViewHolder(view) {
-//        var youTubePlayerView : YouTubePlayerView? = view.findViewById(R.id.videoyoutube) as YouTubePlayerView
         var youTubeThumbnailView : YouTubeThumbnailView? = view.findViewById(R.id.video_thumbnail_image_view) as YouTubeThumbnailView
         var youTubeCardView : CardView? = view.findViewById(R.id.youtube_row_card_view) as CardView
     }
