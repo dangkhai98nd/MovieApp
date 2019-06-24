@@ -38,8 +38,20 @@ class MoviesAdapter(
 
     override fun onBindViewHolder(p0: ItemViewHolder, p1: Int) {
 
-        p0.bind()
 
+        val movie = movieList[p1]
+        p0.title?.text = movie.original_title
+        val vote: String? =movie.vote_average.toString()
+        p0.rating?.text = vote
+
+
+
+        Glide.with(mContext ?: return)
+            .load(movie.get_poster_path())
+            .thumbnail(Glide.with(mContext!!).load(R.drawable.icon_load))
+            .fitCenter()
+//            .apply(RequestOptions().placeholder(R.drawable.load_icon))
+            .into(p0.thumbnail)
 
     }
 
@@ -48,38 +60,36 @@ class MoviesAdapter(
         override val containerView: View
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        fun bind() {
-            val movie = movieList[adapterPosition]
-            title?.text = movie.original_title
-            val vote: String? =movie.vote_average.toString()
-            rating?.text = vote
+//        fun bind() {
+//            val movie = movieList[adapterPosition]
+//            title?.text = movie.original_title
+//            val vote: String? =movie.vote_average.toString()
+//            rating?.text = vote
+//
+//
+//
+//            Glide.with(mContext ?: return)
+//                .load(movie.get_poster_path())
+//                .thumbnail(Glide.with(mContext!!).load(R.drawable.icon_load))
+//                .fitCenter()
+////            .apply(RequestOptions().placeholder(R.drawable.load_icon))
+//                .into(thumbnail)
+//        }
+
+        val value = containerView.setOnClickListener {
+            val pos = adapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+
+                val intent = Intent(mContext, DetailActivity::class.java)
+
+                intent.putExtra("movieID", movieList[pos].id)
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                mContext?.startActivity(intent)
 
 
-
-            Glide.with(mContext ?: return)
-                .load(movie.get_poster_path())
-                .thumbnail(Glide.with(mContext!!).load(R.drawable.icon_load))
-                .fitCenter()
-//            .apply(RequestOptions().placeholder(R.drawable.load_icon))
-                .into(thumbnail!!)
-        }
-
-        val value = containerView.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                val pos = adapterPosition
-                if (pos != RecyclerView.NO_POSITION) {
-
-                    val intent = Intent(mContext, DetailActivity::class.java)
-
-                    intent.putExtra("movieID", movieList[pos].id)
-
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    mContext?.startActivity(intent)
-
-
-                }
             }
-        })
+        }
 
     }
 

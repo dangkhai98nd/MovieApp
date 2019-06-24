@@ -109,7 +109,7 @@ class DetailActivity : AppCompatActivity() {
                         Toast.makeText(this@DetailActivity, "Error Fetching Data!", Toast.LENGTH_SHORT).show()
                     }
 
-                    @SuppressLint("SetTextI18n")
+
                     override fun onResponse(call: Call<ApiImages>, response: Response<ApiImages>) {
                         imagesBackdrop = response.body()?.backdrops
 
