@@ -216,9 +216,10 @@ class DetailActivity : AppCompatActivity() {
 
                                             }
 
-                                            setUpRecyclerViewVideos()
-                                            populateRecyclerViewVideos()
+
                                         }
+                                        setUpRecyclerViewVideos()
+                                        populateRecyclerViewVideos()
                                     }
 
                                     override fun onInitializationFailure(
