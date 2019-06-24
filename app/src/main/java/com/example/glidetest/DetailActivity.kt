@@ -1,4 +1,3 @@
-@file:Suppress("DEPRECATION")
 
 package com.example.glidetest
 
@@ -59,9 +58,9 @@ class DetailActivity : AppCompatActivity() {
 
         adapter = BackdropAdapter(this@DetailActivity)
 
-        recycleView?.itemAnimator = DefaultItemAnimator()
-        recycleView?.layoutManager = LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
-        recycleView?.adapter = adapter
+        recycle_view_backdrop?.itemAnimator = DefaultItemAnimator()
+        recycle_view_backdrop?.layoutManager = LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
+        recycle_view_backdrop?.adapter = adapter
 
 
         loadJSONDetail()
@@ -255,3 +254,4 @@ class DetailActivity : AppCompatActivity() {
     }
 
 }
+
