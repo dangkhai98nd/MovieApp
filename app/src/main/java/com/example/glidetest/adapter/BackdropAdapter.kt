@@ -6,60 +6,47 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.glidetest.Models.ApiImages
 import com.example.glidetest.R
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.backdrop.*
 
-class BackdropAdapter (
-    private var mContext : Context?
-) : RecyclerView.Adapter<BackdropAdapter.ItemViewHolder> ()  {
-
-
-    var mImages : MutableList<ApiImages.Image>? = null
-
+class BackdropAdapter(
+    private var mContext: Context?
+) : RecyclerView.Adapter<BackdropAdapter.ItemViewHolder>() {
 
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): BackdropAdapter.ItemViewHolder {
+    var mImages: MutableList<ApiImages.Image>? = null
 
 
-        var view: View? = LayoutInflater.from(p0.context).inflate(R.layout.backdrop, p0, false)
-        return ItemViewHolder(view!!)
-
-
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ItemViewHolder {
+        val view = LayoutInflater.from(p0.context).inflate(R.layout.backdrop, p0, false)
+        return ItemViewHolder(view)
     }
 
+    override fun getItemCount(): Int = mImages?.size ?: 0
 
 
-    override fun getItemCount(): Int = (if (mImages == null) 0 else mImages?.size!!)
+    override fun onBindViewHolder(p0: ItemViewHolder, p1: Int) {
 
 
-    override fun onBindViewHolder(p0: BackdropAdapter.ItemViewHolder, p1: Int) {
-
-
-        Glide.with(this!!.mContext!!)
+        Glide.with(this.mContext ?: return)
             .load(mImages?.get(p1)?.get_image_path())
-            .thumbnail(Glide.with(this!!.mContext!!).load(R.drawable.icon_load_backdrop))
+            .thumbnail(Glide.with(this.mContext!!).load(R.drawable.icon_load_backdrop))
             .fitCenter()
-            .into(p0.backdropbottom!!)
+            .into(p0.backdropbottom)
 
 
     }
 
 
+    class ItemViewHolder(
+        override val containerView: View
+    ) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
 
-
-
-    public class ItemViewHolder (
-        private var view: View
-    ): RecyclerView.ViewHolder(view) {
-        var backdropbottom: ImageView? = view?.findViewById(R.id.backdropbottom)
-
-    }
-
-
-    fun addAll(images : List<ApiImages.Image>?) {
+    fun addAll(images: List<ApiImages.Image>?) {
         this.mImages = images as MutableList<ApiImages.Image>?
         notifyDataSetChanged()
     }

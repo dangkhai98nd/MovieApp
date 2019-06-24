@@ -7,54 +7,58 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.glidetest.BuildConfig
 import com.example.glidetest.Models.Video
 import com.example.glidetest.R
-import com.google.android.youtube.player.*
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubeThumbnailLoader
+import com.google.android.youtube.player.YouTubeThumbnailView
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.videolayout.*
 
-class VideoAdapter (
-    private var mContext : Context?,
-    private var mVideos : List<Video>?
-) : RecyclerView.Adapter<VideoAdapter.ItemViewHolder> ()  {
-
-
-    var selectedPosition : Int = 0
-
-
-
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): VideoAdapter.ItemViewHolder {
+class VideoAdapter(
+    private var mContext: Context?,
+    private var mVideos: List<Video>?
+) : RecyclerView.Adapter<VideoAdapter.ItemViewHolder>() {
 
 
-        var view: View? = LayoutInflater.from(p0.context).inflate(R.layout.videolayout, p0, false)
-        return ItemViewHolder(view!!)
+    private var selectedPosition: Int = 0
+
+
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ItemViewHolder {
+
+
+        val view: View = LayoutInflater.from(p0.context).inflate(R.layout.videolayout, p0, false)
+        return ItemViewHolder(view)
 
 
     }
 
 
-
-    override fun getItemCount(): Int = (if (mVideos == null) 0 else mVideos?.size!!)
-
-
-    override fun onBindViewHolder(p0: VideoAdapter.ItemViewHolder, p1: Int) {
+    override fun getItemCount(): Int = mVideos?.size ?: 0
 
 
-        if (selectedPosition == p1)
-        {
-            p0.youTubeCardView?.setCardBackgroundColor(ContextCompat.getColor(this!!.mContext!!,R.color.red))
+    override fun onBindViewHolder(p0: ItemViewHolder,  p1: Int) {
+
+
+        if (selectedPosition == p1) {
+            p0.youtube_row_card_view?.setCardBackgroundColor(ContextCompat.getColor(this.mContext ?: return, R.color.red))
+        } else {
+            p0.youtube_row_card_view?.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    this.mContext ?: return,
+                    R.color.background_color_1
+                )
+            )
         }
-        else {
-            p0.youTubeCardView?.setCardBackgroundColor(ContextCompat.getColor(this!!.mContext!!,R.color.background_color_1))
-        }
 
 
-        p0.youTubeThumbnailView?.initialize(BuildConfig.API_KEY,object :YouTubeThumbnailView.OnInitializedListener{
+        p0.video_thumbnail_image_view?.initialize(BuildConfig.API_KEY, object : YouTubeThumbnailView.OnInitializedListener {
             override fun onInitializationSuccess(p2: YouTubeThumbnailView?, p3: YouTubeThumbnailLoader?) {
                 p3?.setVideo(mVideos?.get(p1)?.key)
-                p3?.setOnThumbnailLoadedListener(object : YouTubeThumbnailLoader.OnThumbnailLoadedListener{
+                p3?.setOnThumbnailLoadedListener(object : YouTubeThumbnailLoader.OnThumbnailLoadedListener {
                     override fun onThumbnailLoaded(p0: YouTubeThumbnailView?, p1: String?) {
-                        p3?.release()
+                        p3.release()
 
                     }
 
@@ -70,22 +74,18 @@ class VideoAdapter (
         })
 
 
-
     }
 
-    fun setSelectedPosition(position: Int?) {
+    fun setSelectedPosition(position: Int) {
 
-        selectedPosition = position!!
+        selectedPosition = position
         notifyDataSetChanged()
     }
 
 
-    class ItemViewHolder (
-        private var view: View
-    ): RecyclerView.ViewHolder(view) {
-        var youTubeThumbnailView : YouTubeThumbnailView? = view.findViewById(R.id.video_thumbnail_image_view) as YouTubeThumbnailView
-        var youTubeCardView : CardView? = view.findViewById(R.id.youtube_row_card_view) as CardView
-    }
+    class ItemViewHolder(
+        override val containerView: View
 
+    ) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
 }

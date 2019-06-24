@@ -1,10 +1,8 @@
 package com.example.retrofittest.Models
 
 
-import android.os.Parcelable
 import com.example.glidetest.Models.Genre
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
 //@Parcelize
 

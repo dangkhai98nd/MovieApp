@@ -168,7 +168,7 @@
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
                 <android.support.v7.widget.RecyclerView android:orientation="horizontal"
-                                                        android:id="@+id/recycle_view_backdrop"
+                                                        android:id="@+id/recycleView"
                                                         android:layout_width ="match_parent"
                                                         android:layout_height = "wrap_content"
                                                         android:clipToPadding="false">

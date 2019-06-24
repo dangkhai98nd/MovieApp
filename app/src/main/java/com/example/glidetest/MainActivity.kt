@@ -2,46 +2,38 @@ package com.example.glidetest
 
 
 import android.app.ProgressDialog
-
 import android.content.res.Configuration
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import kotlinx.android.synthetic.main.activity_main.*
-
 import android.widget.Toast
 import com.example.glidetest.adapter.EndlessRecyclerViewScrollListener
-
 import com.example.glidetest.adapter.MoviesAdapter
 import com.example.glidetest.api.Client
 import com.example.glidetest.api.Service
 import com.example.retrofittest.Models.ApiMovies
 import com.example.retrofittest.Models.Movie
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
 
-    var recycleView : RecyclerView? = null
-    var adapter : MoviesAdapter? = null
-    var movies : MutableList<Movie>? = null
-    var apiMovies : ApiMovies? = null
-    var pd : ProgressDialog? = null
-    var swipeContainer : SwipeRefreshLayout? = null
-    var scrollListener : EndlessRecyclerViewScrollListener? = null
-    var page : Int = 1
+    var recycleView: RecyclerView? = null
+    var adapter: MoviesAdapter? = null
+    var movies: MutableList<Movie>? = null
+    var apiMovies: ApiMovies? = null
+    var pd: ProgressDialog? = null
+    var swipeContainer: SwipeRefreshLayout? = null
+    var scrollListener: EndlessRecyclerViewScrollListener? = null
+    var page: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +43,14 @@ class MainActivity : AppCompatActivity() {
         initViews()
         swipeContainer = main_content
         swipeContainer?.setColorSchemeResources(R.color.red)
-        swipeContainer?.setOnRefreshListener  (SwipeRefreshLayout.OnRefreshListener {
+        swipeContainer?.setOnRefreshListener {
 
             initViews()
 
-        })
+        }
 
 
     }
-
 
 
     private fun initViews() {
@@ -73,15 +64,13 @@ class MainActivity : AppCompatActivity() {
         recycleView = recycle_view
 
         adapter = MoviesAdapter(this)
-        
 
-        if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-        {
 
-            recycleView?.layoutManager = GridLayoutManager(this,2) as RecyclerView.LayoutManager?
-        }
-        else {
-            recycleView?.layoutManager = GridLayoutManager(this,4) as RecyclerView.LayoutManager?
+        if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            recycleView?.layoutManager = GridLayoutManager(this, 2)
+        } else {
+            recycleView?.layoutManager = GridLayoutManager(this, 4)
         }
         recycleView?.itemAnimator = DefaultItemAnimator()
 //        recycleView?.layoutManager = LinearLayoutManager(this@MainActivity,LinearLayout.HORIZONTAL,false)
@@ -106,12 +95,9 @@ class MainActivity : AppCompatActivity() {
 //        recyclerView.getLayoutManager().startSmoothScroll(smoothScroller);
 
 
-
-
-
         recycleView?.adapter = adapter
 
-        var layoutManager : RecyclerView.LayoutManager? = recycle_view.layoutManager
+        val layoutManager: RecyclerView.LayoutManager? = recycle_view.layoutManager
 
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
@@ -132,55 +118,47 @@ class MainActivity : AppCompatActivity() {
         adapter?.notifyDataSetChanged()
 
 
-
     }
 
     private fun loadJSON() {
         try {
-            val client : Client? = Client()
-            var service : Service? = client!!.getClient()?.create(Service::class.java)
-            var call : Call<ApiMovies>? = service?.getApiMovies(page)
+            val client: Client? = Client()
+            val service: Service? = client!!.getClient()?.create(Service::class.java)
+            val call: Call<ApiMovies>? = service?.getApiMovies(page)
             call?.run {
                 enqueue(object : Callback<ApiMovies> {
                     override fun onFailure(call: Call<ApiMovies>, t: Throwable) {
-                        Log.d("Error ",t.message)
-                        Toast.makeText(this@MainActivity , "Error Fetching Data!" , Toast.LENGTH_SHORT).show()
+                        Log.d("Error ", t.message)
+                        Toast.makeText(this@MainActivity, "Error Fetching Data!", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onResponse(call: Call<ApiMovies>, response: Response<ApiMovies>) {
                         apiMovies = response.body()
 
-                        var moviemore : List<Movie> = apiMovies?.results!!
+                        val moviemore: List<Movie> = apiMovies?.results ?: emptyList()
 
                         adapter?.addAll(moviemore)
 
 
-                        if (swipeContainer!!.isRefreshing)
-                        {
+                        if (swipeContainer!!.isRefreshing) {
                             swipeContainer!!.isRefreshing = false
                         }
                         pd?.dismiss()
                     }
 
-                } )
+                })
             }
-        }
-        catch (e : Exception)
-        {
-            Log.d("Error ",e.message)
-            Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Log.d("Error ", e.message)
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
 
 }
 
-private operator fun RecyclerView.OnFlingListener?.invoke(onFlingListener: RecyclerView.OnFlingListener) {
 
-}
 
-private fun <E> MutableList<E>.add(element: List<E>) {
 
-}
 
 
