@@ -7,9 +7,8 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.example.glidetest.Models.ApiImages
 import com.example.glidetest.Models.ApiVideos
@@ -18,14 +17,18 @@ import com.example.glidetest.adapter.BackdropAdapter
 import com.example.glidetest.adapter.VideoAdapter
 import com.example.glidetest.api.Client
 import com.example.glidetest.api.Service
+import com.example.glidetest.utils.RecyclerViewOnClickListener
 import com.example.retrofittest.Models.Movie
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.activity_detail.*
+import kotlinx.android.synthetic.main.videolayout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+
 
 
 
@@ -34,46 +37,22 @@ class DetailActivity : AppCompatActivity() {
 
     var recycleView : RecyclerView? = null
     var adapter : BackdropAdapter? = null
-//    var adapter_videos : VideoAdapter? = null
-//    var recyclerViewVideos : RecyclerView? = null
+    var adapter_videos : VideoAdapter? = null
+    var recyclerViewVideos : RecyclerView? = null
     var imagesBackdrop : List<ApiImages.Image>? = null
     var movieID : Int = 320288
     var movie : Movie? = null
     var videos : List<Video>? = null
     var pd : ProgressDialog? = null
+    var youTubeFragment : YouTubePlayerFragment? = null
+    var youTubePlayerVideos: YouTubePlayer? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-//        val intentThatStartedThisActivity : Intent = intent
-
-
-
-
-
-//        if (intentThatStartedThisActivity.hasExtra("bundle_movie")) {
-//
-//
-//
-//            var bundle: Bundle? = null
-//            bundle = intent.getBundleExtra("bundle_movie")
-//            var parcelable : Parcelable? = null
-//            parcelable = bundle?.getParcelable<Parcelable>("movies")
-//            movie = parcelable as Movie
-//
-//            Toast.makeText(this,"${movie?.name}",Toast.LENGTH_SHORT).show()
-//            Glide.with(this)
-//                .load(movie?.get_backdrop_path())
-//                .into(backdrop)
-//            Glide.with(this)
-//                .load(movie?.get_poster_path())
-//                .into(thumbnail_image_header)
-//            name.setText(movie?.name)
-//            userrating.setText(movie?.vote_average.toString())
-//            releasedate.setText(movie?.release_date)
-//            plotsynopsis.setText(movie?.overview)
-//        }
 
         pd = ProgressDialog(this)
         pd!!.setMessage("Load ...")
@@ -81,25 +60,43 @@ class DetailActivity : AppCompatActivity() {
         pd!!.show()
         movieID = intent.extras.getInt("movieID")
         recycleView = recycle_view_backdrop
-//        recyclerViewVideos = recycle_view_video
+
         adapter = BackdropAdapter(this@DetailActivity)
-//        adapter_videos = VideoAdapter(this@DetailActivity)
 
         recycleView?.itemAnimator = DefaultItemAnimator()
         recycleView?.layoutManager = LinearLayoutManager(this@DetailActivity,LinearLayoutManager.HORIZONTAL,false)
         recycleView?.adapter = adapter
 
-//        recyclerViewVideos?.itemAnimator = DefaultItemAnimator()
-//        recyclerViewVideos?.layoutManager = LinearLayoutManager(this@DetailActivity,LinearLayoutManager.HORIZONTAL,false)
-//        recyclerViewVideos?.adapter = adapter_videos
 
         loadJSONDetail()
         loadJSONTrailer()
         loadJSONImage()
-
         adapter?.notifyDataSetChanged()
-//        adapter_videos?.notifyDataSetChanged()
+        adapter_videos?.notifyDataSetChanged()
 
+    }
+
+    private fun populateRecyclerViewVideos() {
+        adapter_videos = VideoAdapter(this,videos)
+        recyclerViewVideos?.adapter = adapter_videos
+        recyclerViewVideos?.addOnItemTouchListener(RecyclerViewOnClickListener(this,object : RecyclerViewOnClickListener.OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                if (youTubeFragment != null && youTubePlayerVideos != null) {
+                    adapter_videos?.setSelectedPosition(position)
+
+
+                    youTubePlayerVideos?.loadVideo(videos?.get(position)?.key)
+                }
+            }
+        }))
+    }
+
+    private fun setUpRecyclerViewVideos() {
+        recyclerViewVideos = recycle_view_video
+        recyclerViewVideos?.setHasFixedSize(true)
+
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewVideos?.layoutManager = linearLayoutManager
     }
 
     private fun loadJSONImage() {
@@ -122,8 +119,13 @@ class DetailActivity : AppCompatActivity() {
 //                            .load(imagesBackdrop.get(1).get_image_path())
 //                            .into(backdropbottom)
                         adapter?.addAll(imagesBackdrop)
-
-
+                        if (imagesBackdrop?.size != 0 || imagesBackdrop != null) {
+                            backdrop_txt.setText("Backdrop : ")
+                        }
+                        else
+                        {
+                            backdrop_txt.visibility = TextView.GONE
+                        }
                     }
 
                 } )
@@ -158,6 +160,8 @@ class DetailActivity : AppCompatActivity() {
 //                            .into(backdrop)
                         Glide.with(this@DetailActivity)
                             .load(movie?.get_poster_path())
+                            .thumbnail(Glide.with(this@DetailActivity).load(R.drawable.icon_load))
+                            .fitCenter()
                             .into(thumbnail_image_header)
 
                         thumbnail_image_header.clipToOutline = true
@@ -173,7 +177,8 @@ class DetailActivity : AppCompatActivity() {
                         }
                         releasedate.setText("Release date : ${movie?.release_date}")
                         plotsynopsis.setText("Overview : ${movie?.overview}")
-                        pd?.dismiss()
+
+
                     }
 
                 } )
@@ -202,19 +207,29 @@ class DetailActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<ApiVideos>, response: Response<ApiVideos>) {
                         videos = response.body()?.results
 
-                        if (videos?.size != 0) {
-                            val youtubeFragment =
-                                fragmentManager.findFragmentById(R.id.videoyoutube) as YouTubePlayerFragment
-                            youtubeFragment.initialize("${BuildConfig.API_KEY}",
+                        if (videos?.size != 0 ) {
+                            youTubeFragment = fragmentManager.findFragmentById(R.id.videoyoutube) as YouTubePlayerFragment
+                            youTubeFragment?.initialize(BuildConfig.API_KEY,
                                 object : YouTubePlayer.OnInitializedListener {
                                     override fun onInitializationSuccess(
                                         provider: YouTubePlayer.Provider,
                                         youTubePlayer: YouTubePlayer, b: Boolean
                                     ) {
-                                        if (movie?.vote_average!! < 5) {
-                                            youTubePlayer.cueVideo("${videos?.get(0)?.key}")
-                                        } else {
-                                            youTubePlayer.loadVideo("${videos?.get(0)?.key}")
+
+                                        if (!b) {
+                                            youTubePlayerVideos = youTubePlayer
+                                            var vote_average: Float = (if (movie?.vote_average!! == null) 0.0F else movie?.vote_average!!)
+
+                                            youTubePlayerVideos?.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
+                                            if (vote_average < 5) {
+                                                youTubePlayerVideos?.cueVideo(videos?.get(0)?.key)
+                                            } else {
+                                                youTubePlayerVideos?.loadVideo(videos?.get(0)?.key)
+
+                                            }
+
+                                            setUpRecyclerViewVideos()
+                                            populateRecyclerViewVideos()
                                         }
                                     }
 
@@ -222,7 +237,7 @@ class DetailActivity : AppCompatActivity() {
                                         provider: YouTubePlayer.Provider,
                                         youTubeInitializationResult: YouTubeInitializationResult
                                     ) {
-
+//
                                     }
                                 })
 
@@ -232,11 +247,14 @@ class DetailActivity : AppCompatActivity() {
 
                         }
                         else {
-                            backdrop.visibility = ImageView.VISIBLE
-                            Glide.with(this@DetailActivity)
-                                .load(movie?.get_backdrop_path())
-                                .into(backdrop)
+//                            backdrop.visibility = ImageView.VISIBLE
+//                            Glide.with(this@DetailActivity)
+//                                .load(movie?.get_backdrop_path())
+//                                .into(backdrop)
+                            layout_video.visibility = RelativeLayout.GONE
+                            Toast.makeText(this@DetailActivity,"null video",Toast.LENGTH_SHORT).show()
                         }
+                        pd?.dismiss()
 
                     }
 

@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         swipeContainer = main_content
-        swipeContainer?.setColorSchemeResources(android.R.color.holo_orange_dark)
+        swipeContainer?.setColorSchemeResources(R.color.red)
         swipeContainer?.setOnRefreshListener  (SwipeRefreshLayout.OnRefreshListener {
 
             initViews()

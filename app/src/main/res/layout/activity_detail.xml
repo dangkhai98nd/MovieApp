@@ -5,7 +5,7 @@
                                                  android:id="@+id/main_content"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
-                                                 android:background="@color/white"
+                                                 android:background="@color/background_color_4"
                                                  android:fitsSystemWindows="true">
 
 
@@ -16,18 +16,11 @@
                     android:orientation="vertical">
 
                 <RelativeLayout android:layout_width="wrap_content"
+                                android:id="@+id/layout_video"
                                 android:layout_height="wrap_content">
 
 
-                    <ImageView
-                            android:id="@+id/backdrop"
-                            android:layout_height="220dp"
-                            android:layout_width="match_parent"
-                            android:fitsSystemWindows="true"
-                            android:scaleType="centerCrop"
-                            android:adjustViewBounds="true"
-                            app:layout_collapseMode="parallax"
-                            android:foreground="@drawable/poster" android:visibility="invisible"/>
+
 
                     <!--<Button-->
                             <!--android:layout_height="52dp"-->
@@ -42,6 +35,17 @@
                             android:layout_height="wrap_content"
                             android:name="com.google.android.youtube.player.YouTubePlayerFragment">
                     </fragment>
+
+
+                    <!--<ImageView-->
+                            <!--android:id="@+id/backdrop"-->
+                            <!--android:layout_height="220dp"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:fitsSystemWindows="true"-->
+                            <!--android:scaleType="centerCrop"-->
+                            <!--android:adjustViewBounds="true"-->
+                            <!--app:layout_collapseMode="parallax"-->
+                            <!--android:foreground="@drawable/poster" android:visibility="invisible"/>-->
                     <!--<ImageView-->
                             <!--android:id="@+id/iconplay"-->
                             <!--android:layout_height="52dp"-->
@@ -52,13 +56,14 @@
                             <!--android:adjustViewBounds="true"-->
                             <!--app:layout_collapseMode="parallax"-->
                             <!--android:foreground="@drawable/playvideo2"/>-->
-                    <!--<android.support.v7.widget.RecyclerView android:orientation="horizontal"-->
-                                                            <!--android:id="@+id/recycle_view_video"-->
-                                                            <!--android:layout_width ="match_parent"-->
-                                                            <!--android:layout_height = "wrap_content"-->
-                                                            <!--android:clipToPadding="false">-->
+                    <android.support.v7.widget.RecyclerView android:orientation="horizontal"
+                                                            android:id="@+id/recycle_view_video"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="54dp"
+                                                            android:background="@color/background_color_1"
+                                                            android:layout_below="@+id/videoyoutube">
 
-                    <!--</android.support.v7.widget.RecyclerView>-->
+                    </android.support.v7.widget.RecyclerView>
 
                 </RelativeLayout>
 
@@ -92,7 +97,9 @@
                                 android:id="@+id/name"
                                 android:padding="@dimen/padding_layout"
                                 android:layout_marginTop="@dimen/layout_margin_top"
-                                android:textSize="25sp"
+                                android:textSize="20sp"
+                                android:fontFamily="@font/font_1"
+                                android:textColor="@color/white"
                                 app:layout_constraintLeft_toLeftOf="@+id/thumbnail_image_header"
                                 app:layout_constraintTop_toTopOf="@+id/thumbnail_image_header"
                                 tools:layout_constraintTop_creator="1"
@@ -104,7 +111,9 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/userrating"
                                 android:padding="@dimen/padding_layout"
-                                android:textSize="20sp"
+                                android:textSize="@dimen/font_size_text"
+                                android:fontFamily="@font/font_1"
+                                android:textColor="@color/white"
                                 app:layout_constraintTop_toBottomOf="@+id/title"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 tools:layout_constraintTop_creator="1" />
@@ -114,15 +123,19 @@
                                 android:layout_height="wrap_content"
                                 android:id="@+id/time"
                                 android:padding="@dimen/padding_layout"
-                                android:textSize="20sp"
+                                android:textSize="@dimen/font_size_text"
+                                android:fontFamily="@font/font_1"
+                                android:textColor="@color/white"
                                 app:layout_constraintTop_toBottomOf="@+id/userrating"
                                 app:layout_constraintLeft_toLeftOf="parent" />
                         <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/releasedate"
+                                android:textColor="@color/white"
+                                android:fontFamily="@font/font_1"
                                 android:padding="@dimen/padding_layout"
-                                android:textSize="20sp"
+                                android:textSize="@dimen/font_size_text"
                                 app:layout_constraintTop_toBottomOf="@+id/time"
                                 app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -138,9 +151,21 @@
                         android:id="@+id/plotsynopsis"
                         android:layout_marginLeft="@dimen/layout_margin_left"
                         android:padding="@dimen/padding_layout"
-                        android:textSize="20sp"
-
+                        android:textSize="@dimen/font_size_text"
+                        android:fontFamily="@font/font_1"
+                        android:textColor="@color/white"
                         app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/backdrop_txt"
+                        android:layout_marginLeft="@dimen/layout_margin_left"
+                        android:padding="@dimen/padding_layout"
+                        android:textSize="@dimen/font_size_text"
+                        android:fontFamily="@font/font_1"
+                        android:textColor="@color/white"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
 
                 <android.support.v7.widget.RecyclerView android:orientation="horizontal"
                                                         android:id="@+id/recycle_view_backdrop"

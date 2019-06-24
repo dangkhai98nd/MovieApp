@@ -52,9 +52,9 @@ class MoviesAdapter (
 
         Glide.with(this!!.mContext!!)
             .load(movieList?.get(p1)?.get_poster_path())
-//            .thumbnail(Glide.with(this!!.mContext!!).load(R.drawable.load_icon))
-//            .fitCenter()
-            .apply(RequestOptions().placeholder(R.drawable.load_icon))
+            .thumbnail(Glide.with(this!!.mContext!!).load(R.drawable.icon_load))
+            .fitCenter()
+//            .apply(RequestOptions().placeholder(R.drawable.load_icon))
             .into(p0.thumbnail!!)
 
 
