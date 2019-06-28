@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.glidetest.adapter.EndlessRecyclerViewScrollListener
 import com.example.glidetest.adapter.MoviesAdapter
@@ -19,6 +20,7 @@ import com.example.retrofittest.Models.ApiMovies
 import com.example.retrofittest.Models.Movie
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.movie_card.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     var swipeContainer: SwipeRefreshLayout? = null
     var scrollListener: EndlessRecyclerViewScrollListener? = null
     var page: Int = 1
+    var isLoading : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +61,9 @@ class MainActivity : AppCompatActivity() {
         movies = null
         apiMovies = null
         pd = ProgressDialog(this)
-        pd!!.setMessage("Load movie...")
-        pd!!.setCancelable(false)
-        pd!!.show()
+        pd?.setMessage("Load movie...")
+        pd?.setCancelable(false)
+        pd?.show()
         recycleView = recycle_view
 
         adapter = MoviesAdapter(this)
@@ -69,8 +72,10 @@ class MainActivity : AppCompatActivity() {
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             recycleView?.layoutManager = GridLayoutManager(this, 2)
+
         } else {
             recycleView?.layoutManager = GridLayoutManager(this, 4)
+
         }
         recycleView?.itemAnimator = DefaultItemAnimator()
 //        recycleView?.layoutManager = LinearLayoutManager(this@MainActivity,LinearLayout.HORIZONTAL,false)
@@ -101,14 +106,13 @@ class MainActivity : AppCompatActivity() {
 
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
-                this@MainActivity.page++
-
-//                var handler : Handler = Handler()
-//                handler.postDelayed({loadJSON()},2000)
-                loadJSON()
-                scrollListener?.resetState()
-//                adapter?.notifyDataSetChanged()
-
+                if (!(isLoading)) {
+                    this@MainActivity.page++
+                    pbLoading.visibility = ProgressBar.VISIBLE
+                    isLoading = true
+                    loadJSON()
+                    scrollListener?.resetState()
+                }
             }
 
         }
@@ -123,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadJSON() {
         try {
             val client: Client? = Client()
-            val service: Service? = client!!.getClient()?.create(Service::class.java)
+            val service: Service? = client?.getClient()?.create(Service::class.java)
             val call: Call<ApiMovies>? = service?.getApiMovies(page)
             call?.run {
                 enqueue(object : Callback<ApiMovies> {
@@ -139,11 +143,15 @@ class MainActivity : AppCompatActivity() {
 
                         adapter?.addAll(moviemore)
 
-
                         if (swipeContainer!!.isRefreshing) {
                             swipeContainer!!.isRefreshing = false
                         }
                         pd?.dismiss()
+
+                        if (isLoading) {
+                            pbLoading.visibility = ProgressBar.GONE
+                            isLoading = false
+                        }
                     }
 
                 })

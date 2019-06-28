@@ -17,6 +17,17 @@
         android:scrollbars="vertical"
     />
 
+
+    <ProgressBar android:layout_width="30dp"
+                 android:id="@+id/pbLoading"
+                 android:layout_height="30dp"
+                 android:layout_alignParentBottom="true"
+                 android:layout_centerInParent="true"
+                 android:indeterminate="true"
+                 android:indeterminateTintMode="src_atop"
+                 android:indeterminateTint="@color/red"
+                 android:visibility="gone"/>
+
     <!--<RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">-->
         <!--<ImageView-->
                 <!--android:id="@+id/thumbnail_image_header"-->

@@ -16,7 +16,7 @@ import java.util.logging.Handler as Handler1
 
 
 class MoviesAdapter(
-    private var mContext: Context?
+    private var mContext: Context
 ) : RecyclerView.Adapter<MoviesAdapter.ItemViewHolder>() {
 
 
@@ -48,7 +48,7 @@ class MoviesAdapter(
 
         Glide.with(mContext ?: return)
             .load(movie.get_poster_path())
-            .thumbnail(Glide.with(mContext!!).load(R.drawable.icon_load))
+            .thumbnail(Glide.with(mContext).load(R.drawable.icon_load))
             .fitCenter()
 //            .apply(RequestOptions().placeholder(R.drawable.load_icon))
             .into(p0.thumbnail)
@@ -85,7 +85,7 @@ class MoviesAdapter(
                 intent.putExtra("movieID", movieList[pos].id)
 
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                mContext?.startActivity(intent)
+                mContext.startActivity(intent)
 
 
             }
