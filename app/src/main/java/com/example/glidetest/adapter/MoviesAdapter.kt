@@ -46,7 +46,7 @@ class MoviesAdapter(
 
 
 
-        Glide.with(mContext ?: return)
+        Glide.with(mContext)
             .load(movie.get_poster_path())
             .thumbnail(Glide.with(mContext).load(R.drawable.icon_load))
             .fitCenter()

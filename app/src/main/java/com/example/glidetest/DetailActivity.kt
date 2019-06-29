@@ -1,4 +1,3 @@
-
 package com.example.glidetest
 
 import android.annotation.SuppressLint
@@ -50,7 +49,6 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-
         pd = ProgressDialog(this)
         pd?.setMessage("Load ...")
         pd?.setCancelable(false)
@@ -60,7 +58,8 @@ class DetailActivity : AppCompatActivity() {
         adapter = BackdropAdapter(this@DetailActivity)
 
         recycle_view_backdrop?.itemAnimator = DefaultItemAnimator()
-        recycle_view_backdrop?.layoutManager = LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
+        recycle_view_backdrop?.layoutManager =
+            LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
         recycle_view_backdrop?.adapter = adapter
 
 
@@ -78,9 +77,9 @@ class DetailActivity : AppCompatActivity() {
             RecyclerViewOnClickListener(this,
                 object : RecyclerViewOnClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
+
                         if (youTubeFragment != null && youTubePlayerVideos != null) {
                             adapter_videos?.setSelectedPosition(position)
-
 
                             youTubePlayerVideos?.loadVideo(videos?.get(position)?.key)
                         }
@@ -93,8 +92,7 @@ class DetailActivity : AppCompatActivity() {
         recyclerViewVideos = recycle_view_video
         recyclerViewVideos?.setHasFixedSize(true)
 
-        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewVideos?.layoutManager = linearLayoutManager
+        recyclerViewVideos?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun loadJSONImage() {
@@ -116,7 +114,7 @@ class DetailActivity : AppCompatActivity() {
 
 
                         adapter?.addAll(imagesBackdrop)
-                        if (imagesBackdrop?.size != 0 ) {
+                        if (imagesBackdrop?.size != 0) {
                             backdrop_txt.text = "Backdrop : "
                         } else {
                             backdrop_txt.visibility = TextView.GONE
@@ -194,7 +192,8 @@ class DetailActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<ApiVideos>, response: Response<ApiVideos>) {
                         videos = response.body()?.results
 
-                        if (videos?.size != 0) {
+
+                        if (videos != null) {
                             youTubeFragment =
                                 fragmentManager.findFragmentById(R.id.videoyoutube) as YouTubePlayerFragment
                             youTubeFragment?.initialize(BuildConfig.API_KEY,
@@ -204,21 +203,20 @@ class DetailActivity : AppCompatActivity() {
                                         youTubePlayer: YouTubePlayer, b: Boolean
                                     ) {
 
-                                        if (!b) {
-                                            youTubePlayerVideos = youTubePlayer
-                                            val vote_average: Float =
-                                                (movie?.vote_average ?: 0.0F)
 
-                                            youTubePlayerVideos?.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
-                                            if (vote_average < 5) {
-                                                youTubePlayerVideos?.cueVideo(videos?.get(0)?.key)
-                                            } else {
-                                                youTubePlayerVideos?.loadVideo(videos?.get(0)?.key)
+                                        youTubePlayerVideos = youTubePlayer
+                                        val vote_average: Float =
+                                            (movie?.vote_average ?: 0.0F)
 
-                                            }
-
+                                        youTubePlayerVideos?.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
+                                        if (vote_average < 5) {
+                                            youTubePlayerVideos?.cueVideo(videos?.get(0)?.key)
+                                        } else {
+                                            youTubePlayerVideos?.loadVideo(videos?.get(0)?.key)
 
                                         }
+
+
                                         setUpRecyclerViewVideos()
                                         populateRecyclerViewVideos()
                                     }
