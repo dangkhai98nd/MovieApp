@@ -3,9 +3,8 @@ MovieApp Kotlin
 
 # Project 1 - MovieApp
 
-**Name of your app** shows the latest movies currently playing in theaters. The app utilizes the Movie Database API to display images and basic information about these movies to the user.
+MovieApp shows the latest movies currently playing in theaters. The app utilizes the Movie Database API to display images and basic information about these movies to the user.
 
-Time spent: **X** hours spent in total
 
 ## User Stories
 
@@ -47,8 +46,8 @@ Here's a walkthrough of implemented user stories:
 
 ## Open-source libraries used
 
-- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
-- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Retrofit](https://github.com/square/retrofit)
+- [Glide](https://github.com/bumptech/glide)
 
 ## License
 
