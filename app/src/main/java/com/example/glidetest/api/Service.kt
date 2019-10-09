@@ -11,6 +11,17 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface Service {
+    @GET("movie/upcoming")
+    fun getApiMoviesUpcoming(
+        @Query("page") page : Int = 1,
+        @Query("api_key") api_key : String = BuildConfig.API_KEY
+    ) : Call<ApiMovies>
+
+    @GET ("movie/popular")
+    fun getApiMoviesPopular(
+        @Query("page") page : Int = 1,
+        @Query("api_key") api_key : String = BuildConfig.API_KEY
+    ) : Call<ApiMovies>
 
     @GET("movie/now_playing")
     fun getApiMovies(

@@ -48,7 +48,6 @@ class Movie (
 //    :Parcelable
 {
 
-
     fun get_poster_path() : String? = "https://image.tmdb.org/t/p/w500$poster_path"
     fun get_backdrop_path() : String? = "https://image.tmdb.org/t/p/w500$backdrop_path"
 }

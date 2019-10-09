@@ -1,7 +1,9 @@
 package com.example.glidetest
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ProgressDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
@@ -9,10 +11,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.glidetest.Models.ApiImages
 import com.example.glidetest.Models.ApiVideos
 import com.example.glidetest.Models.Video
@@ -25,6 +29,7 @@ import com.example.retrofittest.Models.Movie
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.activity_detail.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,7 +41,8 @@ class DetailActivity : AppCompatActivity() {
     var adapter: BackdropAdapter? = null
     var adapter_videos: VideoAdapter? = null
     var recyclerViewVideos: RecyclerView? = null
-    var imagesBackdrop: List<ApiImages.Image>? = null
+    var imagesBackdrop: List<ApiImages.Image> = listOf()
+    var imagesPoster: List<ApiImages.Image> = listOf()
     var movieID: Int? = null
     var movie: Movie? = null
     var videos: List<Video>? = null
@@ -63,11 +69,30 @@ class DetailActivity : AppCompatActivity() {
         recycle_view_backdrop?.adapter = adapter
 
 
-        loadJSONDetail()
+
         loadJSONTrailer()
-        loadJSONImage()
 
+        transparentStatusBar()
 
+    }
+
+    private fun transparentStatusBar() {
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        window.statusBarColor = Color.TRANSPARENT
+//        window.navigationBarColor = Color.TRANSPARENT
+    }
+
+    private fun setWindowFlag(activity: Activity, bits: Int, on: Boolean) {
+        val win = activity.window
+        val winParams = win.attributes
+        if (on) {
+            winParams.flags = winParams.flags or bits
+        } else {
+            winParams.flags = winParams.flags and bits.inv()
+        }
+        win.attributes = winParams
     }
 
     private fun populateRecyclerViewVideos() {
@@ -92,7 +117,8 @@ class DetailActivity : AppCompatActivity() {
         recyclerViewVideos = recycle_view_video
         recyclerViewVideos?.setHasFixedSize(true)
 
-        recyclerViewVideos?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewVideos?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun loadJSONImage() {
@@ -104,17 +130,21 @@ class DetailActivity : AppCompatActivity() {
                 enqueue(object : Callback<ApiImages> {
                     override fun onFailure(call: Call<ApiImages>, t: Throwable) {
                         Log.d("Error ", t.message)
-                        Toast.makeText(this@DetailActivity, "Error Fetching Data!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@DetailActivity,
+                            "Error Fetching Data!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
 
                     override fun onResponse(call: Call<ApiImages>, response: Response<ApiImages>) {
-                        imagesBackdrop = response.body()?.backdrops
-
-
+                        imagesBackdrop = response.body()?.backdrops ?: listOf()
+                        imagesPoster = response.body()?.posters ?: listOf()
+                        loadJSONDetail()
 
                         adapter?.addAll(imagesBackdrop)
-                        if (imagesBackdrop?.size != 0) {
+                        if (imagesBackdrop.size != 0) {
                             backdrop_txt.text = "Backdrop : "
                         } else {
                             backdrop_txt.visibility = TextView.GONE
@@ -139,7 +169,11 @@ class DetailActivity : AppCompatActivity() {
                 enqueue(object : Callback<Movie> {
                     override fun onFailure(call: Call<Movie>, t: Throwable) {
                         Log.d("Error ", t.message)
-                        Toast.makeText(this@DetailActivity, "Error Fetching Data!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@DetailActivity,
+                            "Error Fetching Data!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     @SuppressLint("SetTextI18n")
@@ -151,7 +185,15 @@ class DetailActivity : AppCompatActivity() {
                             .thumbnail(Glide.with(this@DetailActivity).load(R.drawable.icon_load))
                             .fitCenter()
                             .into(thumbnail_image_header)
-
+                        var image_background : String? = movie?.poster_path
+                        if (imagesPoster.size > 1)
+                            image_background = imagesPoster[1].get_image_path()
+                        if (image_background != null) {
+                            Glide.with(this@DetailActivity)
+                                .load(image_background)
+                                .apply(bitmapTransform(BlurTransformation(22)))
+                                .into(backgroud_image)
+                        }
                         thumbnail_image_header.clipToOutline = true
 
 
@@ -165,10 +207,8 @@ class DetailActivity : AppCompatActivity() {
                         }
                         releasedate.text = "Release date : ${movie?.release_date}"
                         plotsynopsis.text = "Overview : ${movie?.overview}"
-
-
+                        pd?.dismiss()
                     }
-
                 })
             }
         } catch (e: Exception) {
@@ -186,12 +226,16 @@ class DetailActivity : AppCompatActivity() {
                 enqueue(object : Callback<ApiVideos> {
                     override fun onFailure(call: Call<ApiVideos>, t: Throwable) {
                         Log.d("Error ", t.message)
-                        Toast.makeText(this@DetailActivity, "Error Fetching Data Trailer!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@DetailActivity,
+                            "Error Fetching Data Trailer!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     override fun onResponse(call: Call<ApiVideos>, response: Response<ApiVideos>) {
                         videos = response.body()?.results
-
+                        loadJSONImage()
 
                         if (videos != null) {
                             youTubeFragment =
@@ -202,8 +246,6 @@ class DetailActivity : AppCompatActivity() {
                                         provider: YouTubePlayer.Provider,
                                         youTubePlayer: YouTubePlayer, b: Boolean
                                     ) {
-
-
                                         youTubePlayerVideos = youTubePlayer
                                         val vote_average: Float =
                                             (movie?.vote_average ?: 0.0F)
@@ -216,7 +258,6 @@ class DetailActivity : AppCompatActivity() {
 
                                         }
 
-
                                         setUpRecyclerViewVideos()
                                         populateRecyclerViewVideos()
                                     }
@@ -225,26 +266,17 @@ class DetailActivity : AppCompatActivity() {
                                         provider: YouTubePlayer.Provider,
                                         youTubeInitializationResult: YouTubeInitializationResult
                                     ) {
-//
+
                                     }
                                 })
 
-
-//                            adapter_videos?.addAll(videos)
-
-
                         } else {
-//                            backdrop.visibility = ImageView.VISIBLE
-//                            Glide.with(this@DetailActivity)
-//                                .load(movie?.get_backdrop_path())
-//                                .into(backdrop)
+
                             layout_video.visibility = RelativeLayout.GONE
 
                         }
-                        pd?.dismiss()
 
                     }
-
                 })
             }
         } catch (e: Exception) {

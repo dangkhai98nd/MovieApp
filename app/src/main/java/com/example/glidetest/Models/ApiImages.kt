@@ -9,7 +9,7 @@ class ApiImages (
     @field:SerializedName("backdrops")
     var backdrops : List<Image>? = null,
     @field:SerializedName("posters")
-    var poster : List<Image>? = null
+    var posters : List<Image>? = null
 ) {
     class Image (
         @field:SerializedName("aspect_ratio")

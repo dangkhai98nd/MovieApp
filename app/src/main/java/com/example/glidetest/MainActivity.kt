@@ -1,8 +1,10 @@
 package com.example.glidetest
 
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
@@ -10,6 +12,8 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.glidetest.adapter.EndlessRecyclerViewScrollListener
@@ -36,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     var swipeContainer: SwipeRefreshLayout? = null
     var scrollListener: EndlessRecyclerViewScrollListener? = null
     var page: Int = 1
-    var isLoading : Boolean = false
+    var isLoading: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +55,29 @@ class MainActivity : AppCompatActivity() {
             initViews()
 
         }
-
+        transparentStatusBar()
 
     }
 
+    private fun transparentStatusBar() {
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        window.navigationBarColor = Color.TRANSPARENT
+        window.statusBarColor = Color.TRANSPARENT
+    }
+
+    private fun setWindowFlag(activity: Activity, bits: Int, on: Boolean) {
+        val win = activity.window
+        val winParams = win.attributes
+        if (on) {
+            winParams.flags = winParams.flags or bits
+        } else {
+            winParams.flags = winParams.flags and bits.inv()
+        }
+        win.attributes = winParams
+    }
 
     private fun initViews() {
         page = 1
@@ -107,6 +130,8 @@ class MainActivity : AppCompatActivity() {
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
                 if (!(isLoading)) {
+                    if (apiMovies?.page == apiMovies?.total_pages)
+                        return
                     this@MainActivity.page++
                     pbLoading.visibility = ProgressBar.VISIBLE
                     isLoading = true
@@ -133,7 +158,11 @@ class MainActivity : AppCompatActivity() {
                 enqueue(object : Callback<ApiMovies> {
                     override fun onFailure(call: Call<ApiMovies>, t: Throwable) {
                         Log.d("Error ", t.message)
-                        Toast.makeText(this@MainActivity, "Error Fetching Data!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Error Fetching Data!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     override fun onResponse(call: Call<ApiMovies>, response: Response<ApiMovies>) {
