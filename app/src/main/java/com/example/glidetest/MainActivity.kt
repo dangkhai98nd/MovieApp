@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         swipeContainer?.setOnRefreshListener {
 
             initViews()
-
+//            ádfsadf
         }
         transparentStatusBar()
 
