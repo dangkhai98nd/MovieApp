@@ -2,14 +2,18 @@ package com.example.glidetest.adapter
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.ActivityOptions
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.glidetest.DetailActivity
 import com.example.glidetest.R
@@ -21,12 +25,13 @@ import kotlinx.android.synthetic.main.placeholderlayout.*
 
 class MoviesAdapter(
     private var mContext: Context
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
     private var DURATION: Long = 500
     private var on_attach = true
     protected var movieList: MutableList<Movie> = arrayListOf()
+    private var listener : ItemMovieClickListener? = null
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
 //        val view = LayoutInflater.from(p0.context).inflate(R.layout.movie_card, p0, false)
 //        return ItemViewHolder(view)
         return when (p1) {
@@ -55,7 +60,7 @@ class MoviesAdapter(
 
     override fun getItemCount(): Int = (movieList.size + 2)
 
-    override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
+    override fun onBindViewHolder(p0: androidx.recyclerview.widget.RecyclerView.ViewHolder, p1: Int) {
         when (p0) {
             is ItemViewHolder -> {
                 p0.bind()
@@ -99,10 +104,10 @@ class MoviesAdapter(
         animator.start()
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    override fun onAttachedToRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        recyclerView.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
                 Log.d(TAG, "onScrollStateChanged: Called $newState")
                 on_attach = false
                 super.onScrollStateChanged(recyclerView, newState)
@@ -114,7 +119,7 @@ class MoviesAdapter(
 
     inner class ItemPalceViewHolder(
         override val containerView: View
-    ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    ) : androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind() {
             shimmer_view_container.startShimmerAnimation()
         }
@@ -122,7 +127,7 @@ class MoviesAdapter(
 
     inner class ItemViewHolder(
         override val containerView: View
-    ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    ) : androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bind() {
             val movie = movieList[adapterPosition]
@@ -144,13 +149,21 @@ class MoviesAdapter(
             val pos = adapterPosition
             if (pos != RecyclerView.NO_POSITION) {
 
-                val intent = Intent(mContext, DetailActivity::class.java)
-
-                intent.putExtra("movieID", movieList[pos].id)
-
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                mContext.startActivity(intent)
-
+//                val intent = Intent(mContext, DetailActivity::class.java)
+//
+//                intent.putExtra("movieID", movieList[pos].id)
+//
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                val options = ActivityOptions.makeSceneTransitionAnimation(
+//                        this,
+//                        Pair.create(
+//                            thumbnail,
+//                            "thumbnail"
+//                        ),
+//                        Pair.create(title, "title")
+//                    )
+//                mContext.startActivity(intent, options.toBundle())
+                listener?.onAction(movieList[pos].id, thumbnail,title)
 
             }
         }
@@ -161,6 +174,14 @@ class MoviesAdapter(
     fun addAll(movies: List<Movie>) {
         this.movieList.addAll(movies)
         notifyDataSetChanged()
+    }
+
+    fun registerItemMovieClickListener (listener : ItemMovieClickListener) {
+        this.listener = listener
+    }
+
+    interface ItemMovieClickListener {
+        fun onAction(movieID : Int?, thumbnail : ImageView, title : TextView)
     }
 }
 

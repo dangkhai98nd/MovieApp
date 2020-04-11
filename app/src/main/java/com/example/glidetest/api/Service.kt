@@ -5,6 +5,7 @@ import com.example.glidetest.Models.ApiImages
 import com.example.glidetest.Models.ApiVideos
 import com.example.retrofittest.Models.ApiMovies
 import com.example.retrofittest.Models.Movie
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -45,4 +46,10 @@ interface Service {
         @Path("id") movieID: Int,
         @Query("api_key") api_key: String = BuildConfig.API_KEY
     ) : Call<ApiImages>
+
+    @GET("movie/now_playing")
+    fun getApiMoviesObservable(
+        @Query("page") page : Int = 1,
+        @Query("api_key") api_key : String = BuildConfig.API_KEY
+    ) : Observable<ApiMovies>
 }

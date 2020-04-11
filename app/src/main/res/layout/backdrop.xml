@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView android:id="@+id/cardview_backdrop"
+<androidx.cardview.widget.CardView android:id="@+id/cardview_backdrop"
                                     android:layout_gravity="center"
                                     xmlns:card_view="http://schemas.android.com/apk/res-auto"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,7 +19,7 @@
                android:layout_height="200dp">
 
     </ImageView>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>
 
 <!--<ImageView xmlns:android="http://schemas.android.com/apk/res/android"-->
            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->

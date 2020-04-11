@@ -1,7 +1,7 @@
 package com.example.glidetest.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.backdrop.*
 
 class BackdropAdapter(
     private var mContext: Context?
-) : RecyclerView.Adapter<BackdropAdapter.ItemViewHolder>() {
+) : androidx.recyclerview.widget.RecyclerView.Adapter<BackdropAdapter.ItemViewHolder>() {
 
 
     var mImages: MutableList<ApiImages.Image>? = null
@@ -43,7 +43,7 @@ class BackdropAdapter(
 
     class ItemViewHolder(
         override val containerView: View
-    ) : RecyclerView.ViewHolder(containerView), LayoutContainer
+    ) : androidx.recyclerview.widget.RecyclerView.ViewHolder(containerView), LayoutContainer
 
 
     fun addAll(images: List<ApiImages.Image>?) {

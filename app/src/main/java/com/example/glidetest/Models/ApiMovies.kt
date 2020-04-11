@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class ApiMovies (
     @field:SerializedName("results")
-    var results : MutableList<Movie>? = null,
+    var results : MutableList<Movie>,
     @field:SerializedName("page")
     var page : Int? = 0,
     @field:SerializedName("total_results")

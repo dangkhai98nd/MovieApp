@@ -5,10 +5,10 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -40,7 +40,7 @@ class DetailActivity : AppCompatActivity() {
 
     var adapter: BackdropAdapter? = null
     var adapter_videos: VideoAdapter? = null
-    var recyclerViewVideos: RecyclerView? = null
+    var recyclerViewVideos: androidx.recyclerview.widget.RecyclerView? = null
     var imagesBackdrop: List<ApiImages.Image> = listOf()
     var imagesPoster: List<ApiImages.Image> = listOf()
     var movieID: Int? = null
@@ -63,9 +63,14 @@ class DetailActivity : AppCompatActivity() {
 
         adapter = BackdropAdapter(this@DetailActivity)
 
-        recycle_view_backdrop?.itemAnimator = DefaultItemAnimator()
+        recycle_view_backdrop?.itemAnimator =
+            androidx.recyclerview.widget.DefaultItemAnimator()
         recycle_view_backdrop?.layoutManager =
-            LinearLayoutManager(this@DetailActivity, LinearLayoutManager.HORIZONTAL, false)
+            androidx.recyclerview.widget.LinearLayoutManager(
+                this@DetailActivity,
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
+                false
+            )
         recycle_view_backdrop?.adapter = adapter
 
 
@@ -118,7 +123,11 @@ class DetailActivity : AppCompatActivity() {
         recyclerViewVideos?.setHasFixedSize(true)
 
         recyclerViewVideos?.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            androidx.recyclerview.widget.LinearLayoutManager(
+                this,
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
+                false
+            )
     }
 
     private fun loadJSONImage() {
